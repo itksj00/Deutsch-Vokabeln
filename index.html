@@ -1,104 +1,159 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>개인 포트폴리오</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script src="config.js" defer></script>
-  <script src="quotes.js" defer></script>
-  <script src="main.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deutsch Vokabeln - 독일어 단어장</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- 언어 선택 -->
-  <div class="language-selector">
-    <span class="lang-icon">🌐</span>
-    <select id="languageSelect">
-      <option value="ko">한국어</option>
-      <option value="en">English</option>
-      <option value="de">Deutsch</option>
-    </select>
-  </div>
+    <div class="container">
+        <!-- 헤더 -->
+        <div class="header">
+            <h1>🇩🇪 Deutsch Vokabeln</h1>
+            <p>체계적인 독일어 단어 학습</p>
+        </div>
 
-  <!-- 책 슬라이더 -->
-  <div class="book-wrapper">
-    <div class="book" id="book">
-      <!-- 페이지 1 -->
-      <section class="page">
-        <h2 data-i18n="connect-title">소셜 링크 / 소개</h2>
-        <p data-i18n="connect-desc">다음 링크에서 제 활동을 확인하실 수 있습니다.</p>
-        <div class="links-grid">
-          <a class="link-card" data-link="section1.linkedin">💼 LinkedIn</a>
-          <a class="link-card" data-link="section1.github">💻 GitHub</a>
-          <a class="link-card" data-link="section1.twitter">🐦 Twitter</a>
-          <a class="link-card" data-link="section1.email">✉️ Email</a>
+        <!-- 중요도 선택 화면 -->
+        <div id="prioritySelection" class="priority-selection">
+            <h2>중요도 선택</h2>
+            <div class="priority-grid">
+                <div class="priority-card" onclick="selectPriority('1')">
+                    <div class="priority-icon level-1">🔥</div>
+                    <div class="priority-title">중요도 1</div>
+                    <div class="priority-subtitle">필수 단어</div>
+                    <div class="priority-stats" id="priority1Stats"></div>
+                </div>
+                <div class="priority-card" onclick="selectPriority('2')">
+                    <div class="priority-icon level-2">⭐</div>
+                    <div class="priority-title">중요도 2</div>
+                    <div class="priority-subtitle">중요 단어</div>
+                    <div class="priority-stats" id="priority2Stats"></div>
+                </div>
+                <div class="priority-card" onclick="selectPriority('3')">
+                    <div class="priority-icon level-3">✨</div>
+                    <div class="priority-title">중요도 3</div>
+                    <div class="priority-subtitle">고급 단어</div>
+                    <div class="priority-stats" id="priority3Stats"></div>
+                </div>
+            </div>
         </div>
-        <div class="page-quote">
-          <div data-quote="page1-text"></div>
-          <div data-quote="page1-author"></div>
-        </div>
-      </section>
 
-      <!-- 페이지 2 -->
-      <section class="page">
-        <h2 data-i18n="resume-title">이력서 / 경력 소개</h2>
-        <p data-i18n="resume-desc">제 경력과 걸어온 길에 대해 소개드립니다.</p>
-        <div class="links-grid">
-          <a class="link-card" data-link="section2.resume">📄 Resume</a>
-          <a class="link-card" data-link="section2.experience">💼 Experience</a>
-          <a class="link-card" data-link="section2.skills">🎯 Skills</a>
-          <a class="link-card" data-link="section2.cv">⬇️ CV</a>
+        <!-- 레벨 선택 화면 -->
+        <div id="levelSelection" style="display: none;">
+            <div class="back-header">
+                <button class="btn-back" onclick="backToPriority()">← 중요도 선택으로</button>
+                <h2 id="levelSelectionTitle">중요도 1 - 레벨 선택</h2>
+            </div>
+            <div class="level-grid" id="levelGrid"></div>
         </div>
-        <div class="page-quote">
-          <div data-quote="page2-text"></div>
-          <div data-quote="page2-author"></div>
-        </div>
-      </section>
 
-      <!-- 페이지 3 -->
-      <section class="page">
-        <h2 data-i18n="portfolio-title">포트폴리오 / 프로젝트</h2>
-        <p data-i18n="portfolio-desc">제가 진행한 프로젝트와 작업물을 모아두었습니다.</p>
-        <div class="links-grid">
-          <a class="link-card" data-link="section3.portfolio">🎨 Portfolio</a>
-          <a class="link-card" data-link="section3.project1">🚀 Project 1</a>
-          <a class="link-card" data-link="section3.project2">⚡ Project 2</a>
-          <a class="link-card" data-link="section3.website">🌐 Website</a>
-        </div>
-        <div class="page-quote">
-          <div data-quote="page3-text"></div>
-          <div data-quote="page3-author"></div>
-        </div>
-      </section>
+        <!-- 학습 모드 화면 -->
+        <div id="learningMode" class="learning-mode">
+            <div class="learning-container">
+                <div class="learning-header">
+                    <div>
+                        <div class="learning-title" id="modeTitle"></div>
+                        <div class="progress-info">
+                            <span id="questionCounter">1 / 50</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="action-btn back" onclick="backToLevelSelection()">← 돌아가기</button>
+                </div>
 
-      <!-- 페이지 4 -->
-      <section class="page">
-        <h2 data-i18n="personal-title">취미 / 개인 이야기</h2>
-        <p data-i18n="personal-desc">일상 속 작은 즐거움과 저의 이야기를 담았습니다.</p>
-        <div class="links-grid">
-          <a class="link-card" data-link="section4.hobbies">🎭 Hobbies</a>
-          <a class="link-card" data-link="section4.story">📖 Story</a>
-          <a class="link-card" data-link="section4.travel">✈️ Travel</a>
-          <a class="link-card" data-link="section4.photography">📷 Photography</a>
+                <!-- Multiple Choice 모드 -->
+                <div id="mcMode">
+                    <div class="question-container">
+                        <div class="pos-label" id="mcPosLabel"></div>
+                        <div class="question-text" id="koreanWord"></div>
+                        <div class="choices" id="choices"></div>
+                        <div class="feedback" id="mcFeedback"></div>
+                        <div class="action-buttons">
+                            <button class="action-btn next" id="mcNextBtn" onclick="nextMCQuestion()" disabled>다음</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typing Practice 모드 -->
+                <div id="tpMode">
+                    <div class="question-container">
+                        <div class="pos-label" id="posLabel"></div>
+                        <div class="question-text" id="germanMeaning"></div>
+                        <div class="typing-container">
+                            <div class="typing-hint">정관사 + 단어를 입력하세요</div>
+                            <input type="text" id="typingInput" class="typing-input" placeholder="예: der Hund">
+                            <div class="feedback" id="tpFeedback"></div>
+                            <div class="action-buttons">
+                                <button class="action-btn next" id="tpSubmitBtn" onclick="submitTypingPractice()">제출</button>
+                                <button class="action-btn next" id="tpNextBtn" onclick="nextTPQuestion()" style="display:none;">다음</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="page-quote">
-          <div data-quote="page4-text"></div>
-          <div data-quote="page4-author"></div>
+
+        <!-- 결과 모달 -->
+        <div class="result-modal" id="resultModal">
+            <div class="result-content">
+                <div class="result-title" id="resultTitle"></div>
+                <div class="result-score" id="resultScore"></div>
+                <div class="result-message" id="resultMessage"></div>
+                <div class="result-buttons">
+                    <button class="result-btn retry" onclick="retryMode()">재시도</button>
+                    <button class="result-btn home" onclick="backToLevelSelection()">레벨 선택</button>
+                </div>
+            </div>
         </div>
-      </section>
+
+        <!-- 통계 모달 -->
+        <div class="stats-modal" id="statsModal">
+            <div class="stats-content">
+                <div class="stats-header">📊 학습 통계</div>
+                
+                <div class="stats-section">
+                    <h3>전체 학습 현황</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">총 학습한 단어 수</span>
+                        <span class="stat-value" id="totalWords">0개</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">총 정답 수</span>
+                        <span class="stat-value" id="totalCorrect">0개</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">전체 정답률</span>
+                        <span class="stat-value" id="totalAccuracy">0%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">완료한 레벨</span>
+                        <span class="stat-value" id="completedLevels">0개</span>
+                    </div>
+                </div>
+
+                <div class="stats-section">
+                    <h3>자주 틀리는 단어 TOP 10</h3>
+                    <div class="mistake-list" id="mistakeList">
+                        <p style="text-align: center; color: #999;">아직 데이터가 없습니다.</p>
+                    </div>
+                </div>
+
+                <button class="close-stats-btn" onclick="closeStatsModal()">닫기</button>
+            </div>
+        </div>
+
+        <!-- 통계 버튼 -->
+        <button class="stats-button" onclick="showStatsModal()">📊</button>
     </div>
 
-    <!-- 네비게이션 -->
-    <button id="prevBtn" class="nav-arrow left">‹</button>
-    <button id="nextBtn" class="nav-arrow right">›</button>
-  </div>
-
-  <!-- 푸터 -->
-  <footer class="footer">
-    <div class="quote">
-      <span data-i18n="quote">모든 학문 중 가장 높은 것은 자기 자신을 아는 것이다.</span>
-      <div data-i18n="quote-author">— 플라톤</div>
-    </div>
-  </footer>
+    <!-- JavaScript 파일들 -->
+    <script src="data.js"></script>
+    <script src="storage.js"></script>
+    <script src="ui.js"></script>
+    <script src="quiz.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
