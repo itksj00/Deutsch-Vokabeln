@@ -111,13 +111,27 @@ function selectMCAnswer(selected, correct, idx) {
         choiceBtns[idx].classList.add('selected', 'incorrect');
     }
     
-    // 피드백 표시
+    // 피드백 표시 (예문 포함)
     const feedback = document.getElementById('mcFeedback');
+    const exampleSentences = getExampleSentences(correct, question.korean);
+    
     if (isCorrect) {
-        feedback.textContent = '✓ 정답입니다!';
+        feedback.innerHTML = `
+            <div class="feedback-title">✓ 정답입니다!</div>
+            <div class="feedback-word">${correct} - ${question.korean}</div>
+            <div class="example-sentences">
+                ${exampleSentences.map(ex => `<div class="example-item">${ex}</div>`).join('')}
+            </div>
+        `;
         feedback.classList.add('show', 'correct');
     } else {
-        feedback.textContent = `✗ 오답입니다. 정답: ${correct}`;
+        feedback.innerHTML = `
+            <div class="feedback-title">✗ 오답입니다</div>
+            <div class="feedback-word">정답: ${correct} - ${question.korean}</div>
+            <div class="example-sentences">
+                ${exampleSentences.map(ex => `<div class="example-item">${ex}</div>`).join('')}
+            </div>
+        `;
         feedback.classList.add('show', 'incorrect');
     }
     
@@ -159,7 +173,11 @@ function displayTPQuestion() {
     typingInput.value = '';
     typingInput.disabled = false;
     typingInput.focus();
-    typingInput.className = 'typing-input';
+    
+    // 스타일 초기화
+    typingInput.style.background = '';
+    typingInput.style.color = '';
+    typingInput.style.borderColor = '';
     
     // Enter 키로 제출
     typingInput.onkeydown = (e) => {
@@ -188,14 +206,39 @@ function submitTypingPractice() {
     
     // 입력 박스 상태
     typingInput.disabled = true;
-    typingInput.classList.add(isCorrect ? 'correct' : 'incorrect');
+    if (isCorrect) {
+        typingInput.style.background = '#2ecc71';
+        typingInput.style.color = 'white';
+        typingInput.style.borderColor = '#27ae60';
+    } else {
+        typingInput.style.background = '#e74c3c';
+        typingInput.style.color = 'white';
+        typingInput.style.borderColor = '#c0392b';
+    }
     
-    // 피드백 표시
+    // 피드백 표시 (정답과 예문 포함)
     const feedback = document.getElementById('tpFeedback');
-    feedback.textContent = isCorrect 
-        ? '✓ 정답입니다!' 
-        : `✗ 오답입니다. 정답: ${correctAnswer}`;
-    feedback.classList.add('show', isCorrect ? 'correct' : 'incorrect');
+    const exampleSentences = getExampleSentences(question.german, question.korean);
+    
+    if (isCorrect) {
+        feedback.innerHTML = `
+            <div class="feedback-title">✓ 정답입니다!</div>
+            <div class="feedback-word">${correctAnswer} - ${question.korean}</div>
+            <div class="example-sentences">
+                ${exampleSentences.map(ex => `<div class="example-item">${ex}</div>`).join('')}
+            </div>
+        `;
+        feedback.classList.add('show', 'correct');
+    } else {
+        feedback.innerHTML = `
+            <div class="feedback-title">✗ 오답입니다</div>
+            <div class="feedback-word">정답: ${correctAnswer} - ${question.korean}</div>
+            <div class="example-sentences">
+                ${exampleSentences.map(ex => `<div class="example-item">${ex}</div>`).join('')}
+            </div>
+        `;
+        feedback.classList.add('show', 'incorrect');
+    }
     
     // 버튼 상태 변경
     const tpSubmitBtn = document.getElementById('tpSubmitBtn');
@@ -229,4 +272,36 @@ function getPosLabel(pos) {
         'other': '기타'
     };
     return labels[pos] || pos;
+}
+
+// 예문 생성 함수
+function getExampleSentences(german, korean) {
+    // 품사에 따른 예문 템플릿
+    const templates = [
+        `${german}은(는) "${korean}"을(를) 의미합니다.`,
+        `일상에서 ${german}을(를) 자주 사용합니다.`
+    ];
+    
+    // 명사인 경우 (정관사 포함)
+    if (german.startsWith('der ') || german.startsWith('die ') || german.startsWith('das ')) {
+        const parts = german.split(' ');
+        const article = parts[0];
+        const noun = parts.slice(1).join(' ');
+        
+        return [
+            `Ich habe ${german} gesehen. (나는 ${korean}을(를) 보았습니다.)`,
+            `${article.charAt(0).toUpperCase() + article.slice(1)} ${noun} ist wichtig. (${korean}은(는) 중요합니다.)`
+        ];
+    }
+    
+    // 동사인 경우
+    if (german.endsWith('en') || german.endsWith('eln') || german.endsWith('ern')) {
+        return [
+            `Ich möchte ${german}. (나는 ${korean}하고 싶습니다.)`,
+            `Wir müssen ${german}. (우리는 ${korean}해야 합니다.)`
+        ];
+    }
+    
+    // 형용사/기타
+    return templates;
 }
